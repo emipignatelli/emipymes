@@ -178,6 +178,7 @@ function InventoryPage() {
             Agregar producto
 
           </button>
+          
 
         </div>
 

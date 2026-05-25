@@ -203,6 +203,9 @@ function OrdersPage() {
       total,
 
       date: new Date().toLocaleString(),
+
+      // NUEVO
+      status: 'Pendiente',
     }
 
     // Guardar

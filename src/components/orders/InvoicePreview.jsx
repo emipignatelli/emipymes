@@ -2,10 +2,38 @@ import {
   HiOutlinePrinter,
 } from 'react-icons/hi'
 
+import {
+  FaWhatsapp,
+} from 'react-icons/fa'
+
+import generatePDF from '../../utils/generatePDF'
+
 function InvoicePreview({
   latestSale,
 }) {
   if (!latestSale) return null
+
+  // WhatsApp
+  const handleWhatsApp = () => {
+    const message = `
+Hola ${latestSale.client.name} 👋
+
+Tu compra fue realizada correctamente.
+
+Total: $${latestSale.total.toLocaleString()}
+
+Gracias por tu compra.
+    `
+
+    const phone =
+      latestSale.client.phone.replace(/\D/g, '')
+
+    const url = `https://wa.me/54${phone}?text=${encodeURIComponent(
+      message
+    )}`
+
+    window.open(url, '_blank')
+  }
 
   return (
     <div
@@ -42,22 +70,59 @@ function InvoicePreview({
 
         </div>
 
-        <button
-          onClick={() => window.print()}
-          className="
-            h-12 px-6 rounded-2xl
-            bg-blue-600 hover:bg-blue-700
-            transition
-            text-white font-bold
-            flex items-center gap-2
-          "
-        >
+        {/* Botones */}
+        <div className="flex flex-wrap gap-4">
 
-          <HiOutlinePrinter />
+          <button
+            onClick={() => window.print()}
+            className="
+              h-12 px-6 rounded-2xl
+              bg-blue-600 hover:bg-blue-700
+              transition
+              text-white font-bold
+              flex items-center gap-2
+            "
+          >
 
-          Imprimir
+            <HiOutlinePrinter />
 
-        </button>
+            Imprimir
+
+          </button>
+
+          <button
+            onClick={() =>
+              generatePDF(latestSale)
+            }
+            className="
+              h-12 px-6 rounded-2xl
+              bg-green-600 hover:bg-green-700
+              transition
+              text-white font-bold
+              flex items-center gap-2
+            "
+          >
+            Descargar PDF
+          </button>
+
+          <button
+            onClick={handleWhatsApp}
+            className="
+              h-12 px-6 rounded-2xl
+              bg-emerald-600 hover:bg-emerald-700
+              transition
+              text-white font-bold
+              flex items-center gap-2
+            "
+          >
+
+            <FaWhatsapp />
+
+            WhatsApp
+
+          </button>
+
+        </div>
 
       </div>
 
