@@ -1,5 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+
+import {
+  Link,
+  useNavigate,
+} from 'react-router-dom'
 
 import {
   HiOutlineUser,
@@ -11,17 +15,140 @@ import {
 
 import { FcGoogle } from 'react-icons/fc'
 
+import toast from 'react-hot-toast'
+
+import { useAuth } from '../../context/AuthContext'
+
 function RegisterForm() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const navigate = useNavigate()
+
+  const { register } = useAuth()
+
+  const [showPassword, setShowPassword] =
+    useState(false)
+
+  const [
+    showConfirmPassword,
+    setShowConfirmPassword,
+  ] = useState(false)
+
+  const [formData, setFormData] =
+    useState({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      terms: false,
+    })
+
+  // Inputs
+  const handleChange = (e) => {
+    const { name, value, type, checked } =
+      e.target
+
+    setFormData({
+      ...formData,
+      [name]:
+        type === 'checkbox'
+          ? checked
+          : value,
+    })
+  }
+
+  // Submit
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    // Validación
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      toast.error(
+        'Completá todos los campos'
+      )
+
+      return
+    }
+
+    // Contraseñas
+    if (
+      formData.password !==
+      formData.confirmPassword
+    ) {
+      toast.error(
+        'Las contraseñas no coinciden'
+      )
+
+      return
+    }
+
+    // Términos
+    if (!formData.terms) {
+      toast.error(
+        'Aceptá los términos'
+      )
+
+      return
+    }
+
+    // Nuevo usuario
+    const newUser = {
+      firstName:
+        formData.firstName,
+      lastName:
+        formData.lastName,
+      email: formData.email,
+      password:
+        formData.password,
+    }
+
+    // Register
+    const result =
+      register(newUser)
+
+    // Error
+    if (!result.success) {
+      toast.error(result.message)
+
+      return
+    }
+
+    // Success
+    toast.success(
+      'Cuenta creada correctamente'
+    )
+
+    navigate('/login')
+  }
 
   return (
-    <div className="w-full max-w-2xl rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-2xl p-8 md:p-12 shadow-2xl">
+    <div
+      className="
+        w-full max-w-2xl
+        rounded-[32px]
+        border border-white/10
+        bg-white/5
+        backdrop-blur-2xl
+        p-8 md:p-12
+        shadow-2xl
+      "
+    >
 
       {/* Header */}
       <div className="text-center mb-10">
 
-        <h2 className="text-white text-4xl md:text-5xl font-black">
+        <h2
+          className="
+            text-white
+            text-4xl md:text-5xl
+            font-black
+          "
+        >
           Crear cuenta
         </h2>
 
@@ -32,7 +159,10 @@ function RegisterForm() {
       </div>
 
       {/* Form */}
-      <form className="space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6"
+      >
 
         {/* Nombre y apellido */}
         <div className="grid md:grid-cols-2 gap-6">
@@ -46,15 +176,27 @@ function RegisterForm() {
 
             <div className="mt-2 relative">
 
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xl">
+              <span
+                className="
+                  absolute left-4 top-1/2
+                  -translate-y-1/2
+                  text-zinc-500 text-xl
+                "
+              >
                 <HiOutlineUser />
               </span>
 
               <input
                 type="text"
+                name="firstName"
+                value={
+                  formData.firstName
+                }
+                onChange={handleChange}
                 placeholder="Juan"
                 className="
-                  w-full h-14 rounded-2xl bg-zinc-900/80
+                  w-full h-14 rounded-2xl
+                  bg-zinc-900/80
                   border border-white/10
                   pl-12 pr-4
                   text-white
@@ -77,15 +219,27 @@ function RegisterForm() {
 
             <div className="mt-2 relative">
 
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xl">
+              <span
+                className="
+                  absolute left-4 top-1/2
+                  -translate-y-1/2
+                  text-zinc-500 text-xl
+                "
+              >
                 <HiOutlineUser />
               </span>
 
               <input
                 type="text"
+                name="lastName"
+                value={
+                  formData.lastName
+                }
+                onChange={handleChange}
                 placeholder="Pérez"
                 className="
-                  w-full h-14 rounded-2xl bg-zinc-900/80
+                  w-full h-14 rounded-2xl
+                  bg-zinc-900/80
                   border border-white/10
                   pl-12 pr-4
                   text-white
@@ -110,15 +264,25 @@ function RegisterForm() {
 
           <div className="mt-2 relative">
 
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xl">
+            <span
+              className="
+                absolute left-4 top-1/2
+                -translate-y-1/2
+                text-zinc-500 text-xl
+              "
+            >
               <HiOutlineMail />
             </span>
 
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               placeholder="ejemplo@gmail.com"
               className="
-                w-full h-14 rounded-2xl bg-zinc-900/80
+                w-full h-14 rounded-2xl
+                bg-zinc-900/80
                 border border-white/10
                 pl-12 pr-4
                 text-white
@@ -144,54 +308,31 @@ function RegisterForm() {
 
             <div className="mt-2 relative">
 
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xl">
-                <HiOutlineLockClosed />
-              </span>
-
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="********"
+              <span
                 className="
-                  w-full h-14 rounded-2xl bg-zinc-900/80
-                  border border-white/10
-                  pl-12 pr-14
-                  text-white
-                  outline-none
-                  focus:border-blue-500
-                  transition
+                  absolute left-4 top-1/2
+                  -translate-y-1/2
+                  text-zinc-500 text-xl
                 "
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xl"
               >
-                {showPassword ? <HiOutlineEyeOff /> : <HiOutlineEye />}
-              </button>
-
-            </div>
-
-          </div>
-
-          {/* Confirm Password */}
-          <div>
-
-            <label className="text-zinc-300 text-sm">
-              Confirmar contraseña
-            </label>
-
-            <div className="mt-2 relative">
-
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xl">
                 <HiOutlineLockClosed />
               </span>
 
               <input
-                type={showConfirmPassword ? 'text' : 'password'}
+                type={
+                  showPassword
+                    ? 'text'
+                    : 'password'
+                }
+                name="password"
+                value={
+                  formData.password
+                }
+                onChange={handleChange}
                 placeholder="********"
                 className="
-                  w-full h-14 rounded-2xl bg-zinc-900/80
+                  w-full h-14 rounded-2xl
+                  bg-zinc-900/80
                   border border-white/10
                   pl-12 pr-14
                   text-white
@@ -204,15 +345,92 @@ function RegisterForm() {
               <button
                 type="button"
                 onClick={() =>
-                  setShowConfirmPassword(!showConfirmPassword)
+                  setShowPassword(
+                    !showPassword
+                  )
                 }
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xl"
+                className="
+                  absolute right-4 top-1/2
+                  -translate-y-1/2
+                  text-zinc-500 text-xl
+                "
               >
+
+                {showPassword ? (
+                  <HiOutlineEyeOff />
+                ) : (
+                  <HiOutlineEye />
+                )}
+
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* Confirm */}
+          <div>
+
+            <label className="text-zinc-300 text-sm">
+              Confirmar contraseña
+            </label>
+
+            <div className="mt-2 relative">
+
+              <span
+                className="
+                  absolute left-4 top-1/2
+                  -translate-y-1/2
+                  text-zinc-500 text-xl
+                "
+              >
+                <HiOutlineLockClosed />
+              </span>
+
+              <input
+                type={
+                  showConfirmPassword
+                    ? 'text'
+                    : 'password'
+                }
+                name="confirmPassword"
+                value={
+                  formData.confirmPassword
+                }
+                onChange={handleChange}
+                placeholder="********"
+                className="
+                  w-full h-14 rounded-2xl
+                  bg-zinc-900/80
+                  border border-white/10
+                  pl-12 pr-14
+                  text-white
+                  outline-none
+                  focus:border-blue-500
+                  transition
+                "
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowConfirmPassword(
+                    !showConfirmPassword
+                  )
+                }
+                className="
+                  absolute right-4 top-1/2
+                  -translate-y-1/2
+                  text-zinc-500 text-xl
+                "
+              >
+
                 {showConfirmPassword ? (
                   <HiOutlineEyeOff />
                 ) : (
                   <HiOutlineEye />
                 )}
+
               </button>
 
             </div>
@@ -226,7 +444,13 @@ function RegisterForm() {
 
           <input
             type="checkbox"
-            className="w-5 h-5 accent-blue-600"
+            name="terms"
+            checked={formData.terms}
+            onChange={handleChange}
+            className="
+              w-5 h-5
+              accent-blue-600
+            "
           />
 
           <span className="text-zinc-400 text-sm">
@@ -242,9 +466,7 @@ function RegisterForm() {
             w-full h-14 rounded-2xl
             bg-blue-600 hover:bg-blue-700
             transition
-            text-white
-            font-bold
-            text-lg
+            text-white font-bold text-lg
           "
         >
           Crear cuenta
@@ -274,8 +496,7 @@ function RegisterForm() {
           hover:bg-zinc-800
           transition
           flex items-center justify-center gap-3
-          text-white
-          font-semibold
+          text-white font-semibold
         "
       >
 
@@ -292,7 +513,11 @@ function RegisterForm() {
 
         <Link
           to="/login"
-          className="text-blue-500 hover:text-blue-400 transition"
+          className="
+            text-blue-500
+            hover:text-blue-400
+            transition
+          "
         >
           Iniciar sesión
         </Link>

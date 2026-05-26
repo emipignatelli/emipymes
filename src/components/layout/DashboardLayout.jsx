@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import {
   HiOutlineHome,
@@ -9,7 +9,19 @@ import {
   HiOutlineLogout,
 } from 'react-icons/hi'
 
+import { useAuth } from '../../context/AuthContext'
+
 function DashboardLayout({ children }) {
+  const { user, logout } = useAuth()
+
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+
+    navigate('/login')
+  }
+
   return (
     <div className="w-full min-h-screen bg-zinc-950 flex">
 
@@ -21,7 +33,10 @@ function DashboardLayout({ children }) {
           to="/dashboard"
           className="text-3xl font-black text-white"
         >
-          SaaS<span className="text-blue-500">Pro</span>
+          SaaS
+          <span className="text-blue-500">
+            Pro
+          </span>
         </Link>
 
         {/* Navigation */}
@@ -73,6 +88,7 @@ function DashboardLayout({ children }) {
         <div className="mt-auto">
 
           <button
+            onClick={handleLogout}
             className="
               w-full flex items-center gap-4
               px-5 py-4 rounded-2xl
@@ -100,7 +116,7 @@ function DashboardLayout({ children }) {
           <div>
 
             <h1 className="text-white text-3xl font-black">
-              Hola, Emiliano 👋
+              Hola, {user?.firstName} 👋
             </h1>
 
             <p className="text-zinc-500 mt-1">
@@ -113,17 +129,21 @@ function DashboardLayout({ children }) {
           <div className="flex items-center gap-4">
 
             <div className="text-right">
+
               <h4 className="text-white font-bold">
-                Emiliano
+                {user?.firstName}
               </h4>
 
               <p className="text-zinc-500 text-sm">
                 Administrador
               </p>
+
             </div>
 
             <div className="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-xl">
-              E
+
+              {user?.firstName?.charAt(0)}
+
             </div>
 
           </div>

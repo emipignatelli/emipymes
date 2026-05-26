@@ -5,6 +5,8 @@ import DashboardLayout from '../../components/layout/DashboardLayout'
 import SalesChart from '../../components/dashboard/SalesChart'
 import TopProducts from '../../components/dashboard/TopProducts'
 
+import { useAuth } from '../../context/AuthContext'
+
 import {
   HiOutlineCurrencyDollar,
   HiOutlineShoppingCart,
@@ -13,6 +15,8 @@ import {
 } from 'react-icons/hi'
 
 function DashboardHome() {
+  const { user } = useAuth()
+
   // Productos
   const products =
     JSON.parse(localStorage.getItem('products')) || []
@@ -44,18 +48,7 @@ function DashboardHome() {
   return (
     <DashboardLayout>
 
-      {/* Header */}
-      <div className="mb-10">
-
-        <h1 className="text-white text-4xl font-black">
-          Dashboard
-        </h1>
-
-        <p className="text-zinc-500 mt-3">
-          Resumen general del negocio.
-        </p>
-
-      </div>
+      
 
       {/* KPIs */}
       <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
