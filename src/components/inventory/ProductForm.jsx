@@ -8,19 +8,22 @@ function ProductForm({
 }) {
   const [formData, setFormData] = useState({
     name: '',
+    barcode: '',
+    sku: '',
     category: '',
     price: '',
     stock: '',
     description: '',
   })
 
-  // Cargar datos si estamos editando
+  // Cargar datos edición
   useEffect(() => {
     if (editingProduct) {
       setFormData(editingProduct)
     }
   }, [editingProduct])
 
+  // Inputs
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -28,6 +31,7 @@ function ProductForm({
     })
   }
 
+  // Submit
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -42,13 +46,9 @@ function ProductForm({
           : 'Disponible',
     }
 
-    // EDITAR
     if (editingProduct) {
       onEditProduct(updatedProduct)
-    }
-
-    // AGREGAR
-    else {
+    } else {
       onAddProduct(updatedProduct)
     }
 
@@ -56,24 +56,41 @@ function ProductForm({
   }
 
   return (
-    <div className="w-full max-w-2xl rounded-[32px] border border-white/10 bg-zinc-900 p-8 shadow-2xl">
+    <div
+      className="
+        w-full max-w-xl
+        rounded-[28px]
+        border border-white/10
+        bg-zinc-900
+        shadow-2xl
+        overflow-hidden
+      "
+    >
 
-      {/* Header */}
-      <div className="mb-10">
+      {/* Top */}
+      <div
+        className="
+          px-8 py-7
+          border-b border-white/10
+          bg-gradient-to-b
+          from-white/[0.03]
+          to-transparent
+        "
+      >
 
-        <h2 className="text-white text-4xl font-black">
+        <h2 className="text-white text-3xl font-black">
 
           {editingProduct
             ? 'Editar producto'
-            : 'Agregar producto'}
+            : 'Nuevo producto'}
 
         </h2>
 
-        <p className="text-zinc-500 mt-3">
+        <p className="text-zinc-500 mt-2 text-sm">
 
           {editingProduct
-            ? 'Modificá la información del producto.'
-            : 'Completá la información del producto.'}
+            ? 'Actualizá la información del producto.'
+            : 'Completá los datos para agregar un producto.'}
 
         </p>
 
@@ -82,13 +99,13 @@ function ProductForm({
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="space-y-6"
+        className="p-8 space-y-7"
       >
 
         {/* Nombre */}
         <div>
 
-          <label className="text-zinc-300 text-sm">
+          <label className="text-sm text-zinc-400 font-medium">
             Nombre del producto
           </label>
 
@@ -99,24 +116,97 @@ function ProductForm({
             onChange={handleChange}
             placeholder="Ej: Teclado Redragon"
             className="
-              mt-2 w-full h-14 rounded-2xl
-              bg-zinc-950 border border-white/10
-              px-5
+              mt-2
+              w-full h-12
+              rounded-xl
+              bg-zinc-950
+              border border-white/10
+              px-4
               text-white
+              text-sm
               outline-none
-              focus:border-blue-500
               transition
+              focus:border-blue-500
+              focus:ring-4
+              focus:ring-blue-500/10
             "
           />
 
         </div>
 
-        {/* Categoría y Precio */}
-        <div className="grid md:grid-cols-2 gap-6">
+        {/* Código de barras + SKU */}
+        <div className="grid md:grid-cols-2 gap-5">
 
           <div>
 
-            <label className="text-zinc-300 text-sm">
+            <label className="text-sm text-zinc-400 font-medium">
+              Código de barras
+            </label>
+
+            <input
+              type="text"
+              name="barcode"
+              value={formData.barcode}
+              onChange={handleChange}
+              placeholder="7791234567890"
+              className="
+                mt-2
+                w-full h-12
+                rounded-xl
+                bg-zinc-950
+                border border-white/10
+                px-4
+                text-white
+                text-sm
+                outline-none
+                transition
+                focus:border-blue-500
+                focus:ring-4
+                focus:ring-blue-500/10
+              "
+            />
+
+          </div>
+
+          <div>
+
+            <label className="text-sm text-zinc-400 font-medium">
+              SKU
+            </label>
+
+            <input
+              type="text"
+              name="sku"
+              value={formData.sku}
+              onChange={handleChange}
+              placeholder="PROD-001"
+              className="
+                mt-2
+                w-full h-12
+                rounded-xl
+                bg-zinc-950
+                border border-white/10
+                px-4
+                text-white
+                text-sm
+                outline-none
+                transition
+                focus:border-blue-500
+                focus:ring-4
+                focus:ring-blue-500/10
+              "
+            />
+
+          </div>
+
+        </div>
+
+        {/* Categoría + Precio */}
+        <div className="grid md:grid-cols-2 gap-5">
+
+          <div>
+
+            <label className="text-sm text-zinc-400 font-medium">
               Categoría
             </label>
 
@@ -127,13 +217,19 @@ function ProductForm({
               onChange={handleChange}
               placeholder="Periféricos"
               className="
-                mt-2 w-full h-14 rounded-2xl
-                bg-zinc-950 border border-white/10
-                px-5
+                mt-2
+                w-full h-12
+                rounded-xl
+                bg-zinc-950
+                border border-white/10
+                px-4
                 text-white
+                text-sm
                 outline-none
-                focus:border-blue-500
                 transition
+                focus:border-blue-500
+                focus:ring-4
+                focus:ring-blue-500/10
               "
             />
 
@@ -141,7 +237,7 @@ function ProductForm({
 
           <div>
 
-            <label className="text-zinc-300 text-sm">
+            <label className="text-sm text-zinc-400 font-medium">
               Precio
             </label>
 
@@ -152,13 +248,19 @@ function ProductForm({
               onChange={handleChange}
               placeholder="$0"
               className="
-                mt-2 w-full h-14 rounded-2xl
-                bg-zinc-950 border border-white/10
-                px-5
+                mt-2
+                w-full h-12
+                rounded-xl
+                bg-zinc-950
+                border border-white/10
+                px-4
                 text-white
+                text-sm
                 outline-none
-                focus:border-blue-500
                 transition
+                focus:border-blue-500
+                focus:ring-4
+                focus:ring-blue-500/10
               "
             />
 
@@ -169,7 +271,7 @@ function ProductForm({
         {/* Stock */}
         <div>
 
-          <label className="text-zinc-300 text-sm">
+          <label className="text-sm text-zinc-400 font-medium">
             Stock disponible
           </label>
 
@@ -180,13 +282,19 @@ function ProductForm({
             onChange={handleChange}
             placeholder="0"
             className="
-              mt-2 w-full h-14 rounded-2xl
-              bg-zinc-950 border border-white/10
-              px-5
+              mt-2
+              w-full h-12
+              rounded-xl
+              bg-zinc-950
+              border border-white/10
+              px-4
               text-white
+              text-sm
               outline-none
-              focus:border-blue-500
               transition
+              focus:border-blue-500
+              focus:ring-4
+              focus:ring-blue-500/10
             "
           />
 
@@ -195,40 +303,74 @@ function ProductForm({
         {/* Descripción */}
         <div>
 
-          <label className="text-zinc-300 text-sm">
+          <label className="text-sm text-zinc-400 font-medium">
             Descripción
           </label>
 
           <textarea
-            rows="5"
+            rows="4"
             name="description"
             value={formData.description}
             onChange={handleChange}
             placeholder="Descripción del producto..."
             className="
-              mt-2 w-full rounded-2xl
-              bg-zinc-950 border border-white/10
-              p-5
+              mt-2
+              w-full
+              rounded-xl
+              bg-zinc-950
+              border border-white/10
+              p-4
               text-white
+              text-sm
               outline-none
-              focus:border-blue-500
               transition
               resize-none
+              focus:border-blue-500
+              focus:ring-4
+              focus:ring-blue-500/10
             "
           />
 
         </div>
 
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+        {/* Bottom */}
+        <div
+          className="
+            flex flex-col-reverse sm:flex-row
+            gap-3
+            pt-3
+          "
+        >
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="
+              flex-1 h-12
+              rounded-xl
+              border border-white/10
+              bg-white/[0.02]
+              hover:bg-white/[0.05]
+              transition
+              text-white
+              text-sm
+              font-semibold
+            "
+          >
+            Cancelar
+          </button>
 
           <button
             type="submit"
             className="
-              flex-1 h-14 rounded-2xl
+              flex-1 h-12
+              rounded-xl
               bg-blue-600 hover:bg-blue-700
               transition
-              text-white font-bold text-lg
+              text-white
+              text-sm
+              font-semibold
+              shadow-lg shadow-blue-500/20
             "
           >
 
@@ -236,20 +378,6 @@ function ProductForm({
               ? 'Guardar cambios'
               : 'Guardar producto'}
 
-          </button>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="
-              flex-1 h-14 rounded-2xl
-              border border-white/10
-              hover:bg-white/5
-              transition
-              text-white font-bold text-lg
-            "
-          >
-            Cancelar
           </button>
 
         </div>

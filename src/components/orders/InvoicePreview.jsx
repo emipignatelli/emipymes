@@ -1,5 +1,6 @@
 import {
   HiOutlinePrinter,
+  HiOutlineDocumentDownload,
 } from 'react-icons/hi'
 
 import {
@@ -13,7 +14,6 @@ function InvoicePreview({
 }) {
   if (!latestSale) return null
 
-  // WhatsApp
   const handleWhatsApp = () => {
     const message = `
 Hola ${latestSale.client.name} 👋
@@ -38,48 +38,47 @@ Gracias por tu compra.
   return (
     <div
       className="
-        mt-8
-        rounded-3xl
+        mt-6
+        rounded-[28px]
         border border-white/10
         bg-zinc-900
-        p-6
+        p-5 md:p-6
       "
     >
 
       {/* Header */}
       <div
         className="
-          flex flex-col md:flex-row
-          md:items-center
-          md:justify-between
-          gap-4
+          flex flex-col lg:flex-row
+          lg:items-center
+          lg:justify-between
+          gap-5
+          pb-5
           border-b border-white/10
-          pb-6
         "
       >
 
         <div>
 
-          <h2 className="text-white text-3xl font-black">
+          <h2 className="text-white text-2xl font-black">
             Factura generada
           </h2>
 
-          <p className="text-zinc-500 mt-2">
-            Venta finalizada correctamente.
+          <p className="text-zinc-500 text-sm mt-1">
+            Venta registrada correctamente.
           </p>
 
         </div>
 
-        {/* Botones */}
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-3">
 
           <button
             onClick={() => window.print()}
             className="
-              h-12 px-6 rounded-2xl
+              h-10 px-4 rounded-xl
               bg-blue-600 hover:bg-blue-700
               transition
-              text-white font-bold
+              text-white text-sm font-semibold
               flex items-center gap-2
             "
           >
@@ -95,23 +94,27 @@ Gracias por tu compra.
               generatePDF(latestSale)
             }
             className="
-              h-12 px-6 rounded-2xl
+              h-10 px-4 rounded-xl
               bg-green-600 hover:bg-green-700
               transition
-              text-white font-bold
+              text-white text-sm font-semibold
               flex items-center gap-2
             "
           >
-            Descargar PDF
+
+            <HiOutlineDocumentDownload />
+
+            PDF
+
           </button>
 
           <button
             onClick={handleWhatsApp}
             className="
-              h-12 px-6 rounded-2xl
+              h-10 px-4 rounded-xl
               bg-emerald-600 hover:bg-emerald-700
               transition
-              text-white font-bold
+              text-white text-sm font-semibold
               flex items-center gap-2
             "
           >
@@ -126,88 +129,122 @@ Gracias por tu compra.
 
       </div>
 
-      {/* Cliente */}
-      <div className="mt-8 grid md:grid-cols-2 gap-6">
+      {/* Datos */}
+      <div className="grid lg:grid-cols-2 gap-4 mt-6">
 
-        <div>
+        {/* Cliente */}
+        <div
+          className="
+            rounded-2xl
+            bg-zinc-950
+            border border-white/5
+            p-5
+          "
+        >
 
-          <p className="text-zinc-500 text-sm">
+          <p className="text-zinc-500 text-xs uppercase tracking-wider">
             Cliente
           </p>
 
-          <h3 className="text-white text-xl font-bold mt-2">
+          <h3 className="text-white text-lg font-bold mt-3">
             {latestSale.client.name}
           </h3>
 
-          <p className="text-zinc-400 mt-2">
-            {latestSale.client.phone}
-          </p>
+          <div className="mt-3 space-y-1">
 
-          <p className="text-zinc-400">
-            {latestSale.client.email}
-          </p>
+            <p className="text-zinc-400 text-sm">
+              {latestSale.client.phone}
+            </p>
+
+            <p className="text-zinc-400 text-sm">
+              {latestSale.client.email}
+            </p>
+
+          </div>
 
         </div>
 
-        <div>
+        {/* Venta */}
+        <div
+          className="
+            rounded-2xl
+            bg-zinc-950
+            border border-white/5
+            p-5
+          "
+        >
 
-          <p className="text-zinc-500 text-sm">
-            Fecha
+          <p className="text-zinc-500 text-xs uppercase tracking-wider">
+            Información de venta
           </p>
 
-          <h3 className="text-white text-xl font-bold mt-2">
-            {latestSale.date}
-          </h3>
+          <div className="mt-3 space-y-3">
 
-          <p className="text-zinc-500 text-sm mt-5">
-            Medio de pago
-          </p>
+            <div>
 
-          <h4 className="text-white font-bold mt-2">
-            {latestSale.paymentMethod}
-          </h4>
+              <p className="text-zinc-500 text-xs">
+                Fecha
+              </p>
+
+              <p className="text-white font-semibold">
+                {latestSale.date}
+              </p>
+
+            </div>
+
+            <div>
+
+              <p className="text-zinc-500 text-xs">
+                Medio de pago
+              </p>
+
+              <p className="text-white font-semibold">
+                {latestSale.paymentMethod}
+              </p>
+
+            </div>
+
+          </div>
 
         </div>
 
       </div>
 
       {/* Productos */}
-      <div className="mt-10">
+      <div className="mt-6">
 
-        <h3 className="text-white text-2xl font-bold mb-6">
-          Productos
+        <h3 className="text-white text-xl font-bold mb-4">
+          Productos vendidos
         </h3>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
 
           {latestSale.products.map(
             (product, index) => (
               <div
                 key={index}
                 className="
-                  rounded-2xl
+                  rounded-xl
                   bg-zinc-950
                   border border-white/5
-                  p-5
+                  p-4
                   flex items-center justify-between
                 "
               >
 
                 <div>
 
-                  <h4 className="text-white font-bold">
+                  <h4 className="text-white font-semibold">
                     {product.name}
                   </h4>
 
-                  <p className="text-zinc-400 mt-1">
-                    Cantidad:
-                    {' '}
-                    {product.quantity}
+                  <p className="text-zinc-500 text-sm mt-1">
+                    Cantidad: {product.quantity}
                   </p>
 
                 </div>
 
-                <h4 className="text-white text-xl font-bold">
+                <h4 className="text-white font-bold">
                   $
                   {Number(
                     product.price *
@@ -226,19 +263,30 @@ Gracias por tu compra.
       {/* Total */}
       <div
         className="
-          mt-10
+          mt-6
           rounded-2xl
-          bg-zinc-950
-          p-6
+          bg-gradient-to-r
+          from-blue-600/10
+          to-green-600/10
+          border border-white/10
+          p-5
           flex items-center justify-between
         "
       >
 
-        <p className="text-zinc-400 text-xl">
-          Total final
-        </p>
+        <div>
 
-        <h3 className="text-white text-4xl font-black">
+          <p className="text-zinc-400 text-sm">
+            Total de la venta
+          </p>
+
+          <p className="text-zinc-500 text-xs mt-1">
+            Importe final registrado
+          </p>
+
+        </div>
+
+        <h3 className="text-white text-3xl font-black">
           $
           {Number(
             latestSale.total

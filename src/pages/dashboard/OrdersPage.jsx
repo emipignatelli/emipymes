@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import DashboardLayout from '../../components/layout/DashboardLayout'
 
 import ClientForm from '../../components/orders/ClientForm'
 import InvoicePreview from '../../components/orders/InvoicePreview'
+
+import { useAuth } from '../../context/AuthContext'
 
 import {
   HiOutlineShoppingCart,
@@ -13,9 +15,19 @@ import {
 import toast from 'react-hot-toast'
 
 function OrdersPage() {
+  const { user } = useAuth()
+
+  // Keys únicas por usuario
+  const productsKey =
+    `products_${user?.storageKey}`
+
+  const salesKey =
+    `sales_${user?.storageKey}`
+
   // Inventario
   const [inventoryProducts, setInventoryProducts] = useState(() => {
-    const savedProducts = localStorage.getItem('products')
+    const savedProducts =
+      localStorage.getItem(productsKey)
 
     return savedProducts
       ? JSON.parse(savedProducts)
@@ -40,6 +52,9 @@ function OrdersPage() {
 
   // Última venta
   const [latestSale, setLatestSale] = useState(null)
+  // Buscadores
+  const [searchName, setSearchName] = useState('')
+  const [searchBarcode, setSearchBarcode] = useState('')
 
   // Agregar producto
   const handleAddProduct = (product) => {
@@ -103,7 +118,7 @@ function OrdersPage() {
     setInventoryProducts(updatedInventory)
 
     localStorage.setItem(
-      'products',
+      productsKey,
       JSON.stringify(updatedInventory)
     )
 
@@ -164,7 +179,7 @@ function OrdersPage() {
     setInventoryProducts(updatedInventory)
 
     localStorage.setItem(
-      'products',
+      productsKey,
       JSON.stringify(updatedInventory)
     )
 
@@ -188,7 +203,7 @@ function OrdersPage() {
 
     // Obtener ventas guardadas
     const savedSales =
-      JSON.parse(localStorage.getItem('sales')) || []
+      JSON.parse(localStorage.getItem(salesKey)) || []
 
     // Nueva venta
     const newSale = {
@@ -204,7 +219,6 @@ function OrdersPage() {
 
       date: new Date().toLocaleString(),
 
-      // NUEVO
       status: 'Pendiente',
     }
 
@@ -212,7 +226,7 @@ function OrdersPage() {
     const updatedSales = [...savedSales, newSale]
 
     localStorage.setItem(
-      'sales',
+      salesKey,
       JSON.stringify(updatedSales)
     )
 
@@ -245,6 +259,38 @@ function OrdersPage() {
       0
     )
   }, [orderItems])
+
+  const filteredProducts = inventoryProducts.filter(
+  (product) => {
+    const matchName = product.name
+      .toLowerCase()
+      .includes(searchName.toLowerCase())
+
+    const matchBarcode =
+      searchBarcode === ''
+        ? true
+        : (product.barcode || '')
+            .toLowerCase()
+            .includes(
+              searchBarcode.toLowerCase()
+            )
+
+    return matchName && matchBarcode
+  }
+)
+useEffect(() => {
+  if (!searchBarcode.trim()) return
+
+  const product = inventoryProducts.find(
+    (item) =>
+      item.barcode === searchBarcode
+  )
+
+  if (product) {
+    handleAddProduct(product)
+    setSearchBarcode('')
+  }
+}, [searchBarcode])
 
   return (
     <DashboardLayout>
@@ -288,10 +334,53 @@ function OrdersPage() {
               </h2>
 
             </div>
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+
+  {/* Buscar por nombre */}
+  <input
+    type="text"
+    placeholder="Buscar producto..."
+    value={searchName}
+    onChange={(e) =>
+      setSearchName(e.target.value)
+    }
+    className="
+      h-12
+      rounded-2xl
+      bg-zinc-950
+      border border-white/10
+      px-4
+      text-white
+      outline-none
+      focus:border-blue-500
+    "
+  />
+
+  {/* Código de barras */}
+  <input
+    type="text"
+    placeholder="Escanear código de barras..."
+    value={searchBarcode}
+    onChange={(e) =>
+      setSearchBarcode(e.target.value)
+    }
+    className="
+      h-12
+      rounded-2xl
+      bg-zinc-950
+      border border-white/10
+      px-4
+      text-white
+      outline-none
+      focus:border-blue-500
+    "
+  />
+
+</div>
 
             <div className="space-y-4">
 
-              {inventoryProducts.map((product, index) => (
+              {filteredProducts.map((product, index) => (
                 <div
                   key={index}
                   className="

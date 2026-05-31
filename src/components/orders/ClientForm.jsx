@@ -10,28 +10,45 @@ function ClientForm({
   }
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-zinc-900 p-6">
+    <div
+      className="
+        rounded-[28px]
+        border border-white/10
+        bg-zinc-900
+        p-5 md:p-6
+      "
+    >
 
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6">
 
-        <h2 className="text-white text-2xl font-bold">
-          Datos del cliente
-        </h2>
+        <div className="flex items-center justify-between gap-4">
 
-        <p className="text-zinc-500 mt-2">
-          Información para el pedido o factura.
-        </p>
+          <div>
+
+            <h2 className="text-white text-xl md:text-2xl font-black">
+              Datos del cliente
+            </h2>
+
+            <p className="text-zinc-500 mt-1 text-sm">
+              Información utilizada para el pedido y facturación.
+            </p>
+
+          </div>
+
+          
+
+        </div>
 
       </div>
 
       {/* Form */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-5">
 
         {/* Nombre */}
         <div>
 
-          <label className="text-zinc-400 text-sm">
+          <label className="text-zinc-400 text-sm font-medium">
             Nombre completo
           </label>
 
@@ -42,13 +59,17 @@ function ClientForm({
             onChange={handleChange}
             placeholder="Juan Pérez"
             className="
-              mt-3 w-full h-14 rounded-2xl
-              bg-zinc-950 border border-white/10
-              px-5
+              mt-2 w-full h-12
+              rounded-xl
+              bg-zinc-950
+              border border-white/10
+              px-4
+              text-sm
               text-white
               outline-none
-              focus:border-blue-500
               transition
+              focus:border-blue-500
+              focus:bg-zinc-950
             "
           />
 
@@ -57,7 +78,7 @@ function ClientForm({
         {/* Teléfono */}
         <div>
 
-          <label className="text-zinc-400 text-sm">
+          <label className="text-zinc-400 text-sm font-medium">
             Teléfono
           </label>
 
@@ -68,13 +89,16 @@ function ClientForm({
             onChange={handleChange}
             placeholder="11 2345 6789"
             className="
-              mt-3 w-full h-14 rounded-2xl
-              bg-zinc-950 border border-white/10
-              px-5
+              mt-2 w-full h-12
+              rounded-xl
+              bg-zinc-950
+              border border-white/10
+              px-4
+              text-sm
               text-white
               outline-none
-              focus:border-blue-500
               transition
+              focus:border-blue-500
             "
           />
 
@@ -83,7 +107,7 @@ function ClientForm({
         {/* Email */}
         <div>
 
-          <label className="text-zinc-400 text-sm">
+          <label className="text-zinc-400 text-sm font-medium">
             Email
           </label>
 
@@ -94,22 +118,25 @@ function ClientForm({
             onChange={handleChange}
             placeholder="cliente@email.com"
             className="
-              mt-3 w-full h-14 rounded-2xl
-              bg-zinc-950 border border-white/10
-              px-5
+              mt-2 w-full h-12
+              rounded-xl
+              bg-zinc-950
+              border border-white/10
+              px-4
+              text-sm
               text-white
               outline-none
-              focus:border-blue-500
               transition
+              focus:border-blue-500
             "
           />
 
         </div>
 
-        {/* DNI/CUIT */}
+        {/* DNI */}
         <div>
 
-          <label className="text-zinc-400 text-sm">
+          <label className="text-zinc-400 text-sm font-medium">
             DNI / CUIT
           </label>
 
@@ -118,15 +145,18 @@ function ClientForm({
             name="dni"
             value={clientData.dni}
             onChange={handleChange}
-            placeholder="20333444555"
+            placeholder="20-33344455-1"
             className="
-              mt-3 w-full h-14 rounded-2xl
-              bg-zinc-950 border border-white/10
-              px-5
+              mt-2 w-full h-12
+              rounded-xl
+              bg-zinc-950
+              border border-white/10
+              px-4
+              text-sm
               text-white
               outline-none
-              focus:border-blue-500
               transition
+              focus:border-blue-500
             "
           />
 
@@ -135,7 +165,7 @@ function ClientForm({
         {/* Dirección */}
         <div className="md:col-span-2">
 
-          <label className="text-zinc-400 text-sm">
+          <label className="text-zinc-400 text-sm font-medium">
             Dirección
           </label>
 
@@ -146,13 +176,16 @@ function ClientForm({
             onChange={handleChange}
             placeholder="Av. Siempre Viva 742"
             className="
-              mt-3 w-full h-14 rounded-2xl
-              bg-zinc-950 border border-white/10
-              px-5
+              mt-2 w-full h-12
+              rounded-xl
+              bg-zinc-950
+              border border-white/10
+              px-4
+              text-sm
               text-white
               outline-none
-              focus:border-blue-500
               transition
+              focus:border-blue-500
             "
           />
 

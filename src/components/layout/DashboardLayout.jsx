@@ -16,6 +16,13 @@ function DashboardLayout({ children }) {
 
   const navigate = useNavigate()
 
+  // DATOS DEL PANEL DE USUARIO
+  const savedUserData = JSON.parse(
+    localStorage.getItem(
+      `userData_${user?.email}`
+    )
+  ) || {}
+
   const handleLogout = () => {
     logout()
 
@@ -140,9 +147,18 @@ function DashboardLayout({ children }) {
 
             </div>
 
-            <div className="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-xl">
+            {/* Avatar */}
+            <div className="w-14 h-14 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center text-white font-black text-xl">
 
-              {user?.firstName?.charAt(0)}
+              {savedUserData?.avatar ? (
+                <img
+                  src={savedUserData.avatar}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                user?.firstName?.charAt(0)
+              )}
 
             </div>
 

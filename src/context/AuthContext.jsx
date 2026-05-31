@@ -46,12 +46,25 @@ export function AuthProvider({
       }
     }
 
+    // Usuario logueado
+    const loggedUser = {
+      ...foundUser,
+
+      // Key única por usuario
+      storageKey:
+        foundUser.email.replace(
+          /[@.]/g,
+          '_'
+        ),
+    }
+
+    // Guardar sesión
     localStorage.setItem(
       'loggedUser',
-      JSON.stringify(foundUser)
+      JSON.stringify(loggedUser)
     )
 
-    setUser(foundUser)
+    setUser(loggedUser)
 
     return {
       success: true,

@@ -17,13 +17,21 @@ import {
 function DashboardHome() {
   const { user } = useAuth()
 
-  // Productos
+  // Productos por usuario
   const products =
-    JSON.parse(localStorage.getItem('products')) || []
+    JSON.parse(
+      localStorage.getItem(
+        `products_${user?.email}`
+      )
+    ) || []
 
-  // Ventas
+  // Ventas por usuario
   const sales =
-    JSON.parse(localStorage.getItem('sales')) || []
+    JSON.parse(
+      localStorage.getItem(
+        `sales_${user?.email}`
+      )
+    ) || []
 
   // Total vendido
   const totalRevenue = useMemo(() => {
@@ -47,8 +55,6 @@ function DashboardHome() {
 
   return (
     <DashboardLayout>
-
-      
 
       {/* KPIs */}
       <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">

@@ -4,6 +4,8 @@ import DashboardLayout from '../../components/layout/DashboardLayout'
 
 import PrintButton from '../../components/orders/PrintButton'
 
+import { useAuth } from '../../context/AuthContext'
+
 import {
   HiOutlineDocumentText,
   HiOutlineUser,
@@ -16,9 +18,15 @@ import {
 import toast from 'react-hot-toast'
 
 function InvoicesPage() {
+  const { user } = useAuth()
+
+  // Key única usuario
+  const salesKey =
+    `sales_${user?.storageKey}`
+
   // Estado local de ventas
   const [sales, setSales] = useState(
-    JSON.parse(localStorage.getItem('sales')) || []
+    JSON.parse(localStorage.getItem(salesKey)) || []
   )
 
   // Buscador
@@ -73,7 +81,7 @@ function InvoicesPage() {
     setSales(updatedSales)
 
     localStorage.setItem(
-      'sales',
+      salesKey,
       JSON.stringify(updatedSales)
     )
 

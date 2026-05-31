@@ -13,17 +13,35 @@ import {
 
 import toast from 'react-hot-toast'
 
+import { useAuth } from '../../context/AuthContext'
+
 function UserPanel() {
+  const { user } = useAuth()
+
+  // KEY única por usuario
+  const storageKey = `userData_${user?.email}`
+
   // Datos usuario
   const [userData, setUserData] = useState(() => {
+    if (!user?.email) {
+      return {
+        businessName: '',
+        email: '',
+        phone: '',
+        address: '',
+        cuit: '',
+        avatar: '',
+      }
+    }
+
     const savedUser =
-      localStorage.getItem('userData')
+      localStorage.getItem(storageKey)
 
     return savedUser
       ? JSON.parse(savedUser)
       : {
           businessName: '',
-          email: '',
+          email: user.email || '',
           phone: '',
           address: '',
           cuit: '',
@@ -31,13 +49,38 @@ function UserPanel() {
         }
   })
 
+  // Cargar datos al cambiar usuario
+  useEffect(() => {
+    if (!user?.email) return
+
+    const savedUser =
+      localStorage.getItem(
+        `userData_${user.email}`
+      )
+
+    if (savedUser) {
+      setUserData(JSON.parse(savedUser))
+    } else {
+      setUserData({
+        businessName: '',
+        email: user.email || '',
+        phone: '',
+        address: '',
+        cuit: '',
+        avatar: '',
+      })
+    }
+  }, [user])
+
   // Guardar automáticamente
   useEffect(() => {
+    if (!user?.email) return
+
     localStorage.setItem(
-      'userData',
+      `userData_${user.email}`,
       JSON.stringify(userData)
     )
-  }, [userData])
+  }, [userData, user])
 
   // Inputs
   const handleChange = (e) => {
@@ -72,7 +115,7 @@ function UserPanel() {
   // Guardar
   const handleSave = () => {
     localStorage.setItem(
-      'userData',
+      `userData_${user.email}`,
       JSON.stringify(userData)
     )
 
