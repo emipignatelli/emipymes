@@ -18,11 +18,16 @@ function OrdersPage() {
   const { user } = useAuth()
 
   // Keys únicas por usuario
+  
+
   const productsKey =
     `products_${user?.storageKey}`
 
   const salesKey =
     `sales_${user?.storageKey}`
+
+  const clientsKey =
+  `clients_${user?.storageKey}`  
 
   // Inventario
   const [inventoryProducts, setInventoryProducts] = useState(() => {
@@ -33,6 +38,15 @@ function OrdersPage() {
       ? JSON.parse(savedProducts)
       : []
   })
+
+  const [clients, setClients] = useState(() => {
+  const savedClients =
+    localStorage.getItem(clientsKey)
+
+  return savedClients
+    ? JSON.parse(savedClients)
+    : []
+})
 
   // Pedido actual
   const [orderItems, setOrderItems] = useState([])
@@ -55,6 +69,11 @@ function OrdersPage() {
   // Buscadores
   const [searchName, setSearchName] = useState('')
   const [searchBarcode, setSearchBarcode] = useState('')
+  const [clientSearch, setClientSearch] =
+  useState('')
+
+  const [showClients, setShowClients] =
+  useState(false)
 
   // Agregar producto
   const handleAddProduct = (product) => {
@@ -247,9 +266,67 @@ function OrdersPage() {
 
     // Reset payment
     setPaymentMethod('Efectivo')
+    const clientExists =
+    clients.some(
+    (client) =>
+      client.name === clientData.name
+  )
 
+    if (!clientExists) {
+    const updatedClients = [
+    ...clients,
+    clientData,
+  ]
+
+  setClients(updatedClients)
+
+  localStorage.setItem(
+    clientsKey,
+    JSON.stringify(updatedClients)
+  )
+}
     toast.success('Pedido finalizado correctamente')
   }
+
+  const handleSaveClient = () => {
+  if (!clientData.name.trim()) {
+    toast.error('Ingresá el nombre del cliente')
+    return
+  }
+
+  const exists = clients.some(
+    (client) =>
+      client.name.toLowerCase() ===
+      clientData.name.toLowerCase()
+  )
+
+  if (exists) {
+    toast.error('Ese cliente ya existe')
+    return
+  }
+
+  const updatedClients = [
+    ...clients,
+    clientData,
+  ]
+
+  setClients(updatedClients)
+
+  localStorage.setItem(
+    clientsKey,
+    JSON.stringify(updatedClients)
+  )
+
+  setClientSearch(clientData.name)
+
+  setShowClients(false)
+
+  setOpenClientModal(false)
+
+  toast.success(
+    'Cliente guardado correctamente'
+  )
+}
 
   // Total
   const total = useMemo(() => {
@@ -259,6 +336,13 @@ function OrdersPage() {
       0
     )
   }, [orderItems])
+
+  const filteredClients =
+  clients.filter((client) =>
+    client.name
+      .toLowerCase()
+      .includes(clientSearch.toLowerCase())
+  )
 
   const filteredProducts = inventoryProducts.filter(
   (product) => {
@@ -292,6 +376,9 @@ useEffect(() => {
   }
 }, [searchBarcode])
 
+  const [openClientModal, setOpenClientModal] =
+    useState(false)
+
   return (
     <DashboardLayout>
 
@@ -311,10 +398,130 @@ useEffect(() => {
       {/* Cliente */}
       <div className="mb-8">
 
-        <ClientForm
-          clientData={clientData}
-          setClientData={setClientData}
-        />
+        <div
+  className="
+    rounded-3xl
+    border border-white/10
+    bg-zinc-900
+    p-6
+  "
+>
+  <div className="flex gap-4">
+
+    <div className="flex gap-3 items-start">
+
+  <div className="flex-1 relative">
+
+    <input
+      type="text"
+      placeholder="Buscar cliente..."
+      value={clientSearch}
+      onChange={(e) => {
+        setClientSearch(
+          e.target.value
+        )
+
+        setShowClients(true)
+      }}
+      className="
+        w-full h-14
+        rounded-2xl
+        bg-zinc-950
+        border border-white/10
+        px-5
+        text-white
+      "
+    />
+
+    {showClients &&
+      clientSearch && (
+        <div
+          className="
+            absolute top-16 left-0
+            w-full
+            rounded-2xl
+            bg-zinc-950
+            border border-white/10
+            overflow-hidden
+            z-50
+          "
+        >
+          {filteredClients.length >
+          0 ? (
+            filteredClients.map(
+              (
+                client,
+                index
+              ) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => {
+                    setClientData(
+                      client
+                    )
+
+                    setClientSearch(
+                      client.name
+                    )
+
+                    setShowClients(
+                      false
+                    )
+                  }}
+                  className="
+                    w-full
+                    px-5 py-4
+                    text-left
+                    text-white
+                    hover:bg-white/5
+                  "
+                >
+                  {client.name}
+                </button>
+              )
+            )
+          ) : (
+            <div
+              className="
+                px-5 py-4
+                text-zinc-500
+              "
+            >
+              Cliente no encontrado
+            </div>
+          )}
+        </div>
+      )}
+
+  </div>
+
+  <button
+    type="button"
+    onClick={() =>
+      setOpenClientModal(true)
+    }
+    className="
+      w-14 h-14
+      rounded-2xl
+      bg-blue-600
+      hover:bg-blue-700
+      transition
+      text-white
+      text-3xl
+      font-bold
+      flex items-center
+      justify-center
+      shrink-0
+    "
+  >
+    +
+  </button>
+
+</div>
+
+  </div>
+</div>
 
       </div>
 
@@ -619,6 +826,47 @@ useEffect(() => {
         latestSale={latestSale}
       />
 
+
+    {
+  openClientModal && (
+    <div
+      className="
+        fixed inset-0 z-50
+        bg-black/70
+        backdrop-blur-sm
+        flex items-center justify-center
+        p-6
+      "
+    >
+      <div className="w-full max-w-3xl">
+
+        <ClientForm
+          clientData={clientData}
+          setClientData={setClientData}
+        />
+
+        <div className="mt-4 flex justify-end">
+
+          <button
+          onClick={handleSaveClient}
+          className="
+          px-6 h-12
+          rounded-xl
+         bg-green-600
+         hover:bg-green-700
+         text-white
+         font-semibold
+                      "
+          >
+          Guardar cliente
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  )
+}
     </DashboardLayout>
   )
 }
